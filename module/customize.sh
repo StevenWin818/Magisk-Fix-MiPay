@@ -3,12 +3,21 @@
 # ==========================================================
 
 ui_print "- 正在安装 HyperOS EEA to CN NFC Port..."
-ui_print "- 正在挂载系统目录..."
+ui_print "- 正在部署混合架构系统文件..."
 
-# 设置文件与目录权限 (非常关键)
-set_perm_recursive "$MODPATH/system/product/app/MITSMClient" 0 0 0755 0644
-set_perm_recursive "$MODPATH/system/product/app/UPTsmService" 0 0 0755 0644
-set_perm_recursive "$MODPATH/system/product/app/MINextpay" 0 0 0755 0644
+# 1) 设置 Magisk 标准注入目录权限
+if [ -d "$MODPATH/system/product/app" ]; then
+    set_perm_recursive "$MODPATH/system/product/app" 0 0 0755 0644
+fi
+
+# 2) 设置 payload 目录权限 (供 bind 挂载使用)
+if [ -d "$MODPATH/payload" ]; then
+    set_perm_recursive "$MODPATH/payload" 0 0 0755 0644
+fi
+
+# 3) 确保启动脚本可执行
+set_perm "$MODPATH/post-fs-data.sh" 0 0 0755
+set_perm "$MODPATH/service.sh" 0 0 0755
 
 ui_print "- 正在检查 UID 状态与应用数据..."
 TSM_DATA_DIR="/data/data/com.miui.tsmclient"

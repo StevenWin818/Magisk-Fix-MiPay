@@ -18,6 +18,13 @@ FixMiPay 项目旨在将 HyperOS 国行版（CN）中的小米智能卡 (MITSMCl
    - 请在 SU 管理器中手动关闭对 NFC (android.uid.nfc) 的"卸载模块"功能。
    - 重启设备以加载模块。
 
+## 架构说明（v1.2.0）
+
+- 采用混合挂载方案：
+   - `system/product/app`：继续注入 MINextpay 与 UPTsmService。
+   - `payload/MITSMClientGlobal`：在 post-fs-data 阶段使用 `mount --bind` 覆盖系统原生 MITSMClientGlobal。
+- 该方案用于降低目录覆盖冲突，并保持与 EEA 原生目录命名一致。
+
 
 ## 注意事项
 
