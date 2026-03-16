@@ -15,7 +15,7 @@ FixMiPay 项目旨在将 HyperOS 国行版（CN）中的小米智能卡 (MITSMCl
 
 2. **安装步骤**
    - 使用 Magisk Manager 或 KernelSU 等工具安装.zip文件。
-   - 请在 SU 管理器中手动关闭对 NFC (android.uid.nfc) 的"卸载模块"功能。
+   <!-- - 请在 SU 管理器中手动关闭对 NFC (android.uid.nfc) 的"卸载模块"功能。 -->
    - 重启设备以加载模块。
 
 ## 架构说明（v1.2.0）

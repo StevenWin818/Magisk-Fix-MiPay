@@ -38,6 +38,6 @@ else
     ui_print "- 未检测到旧数据目录，执行首次干净安装。"
 fi
 
-ui_print "- 请手动关闭对NFC (android.uid.nfc) 的\"卸载模块\"功能。"
+# ui_print "- 请手动关闭对NFC (android.uid.nfc) 的\"卸载模块\"功能。"
 
 ui_print "- 安装完成！请重启设备以应用更改。"
