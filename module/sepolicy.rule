@@ -1,0 +1,4 @@
+# 允许 nfc 域执行系统基础命令
+allow nfc system_file file { execute execute_no_trans getattr read open }
+allow nfc toolbox_exec file { execute execute_no_trans getattr read open }
+allow nfc rootfs file { execute execute_no_trans getattr read open }
