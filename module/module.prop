@@ -4,4 +4,4 @@ version=1.1.0
 versionCode=2026031603
 author=GitHub@StevenWin818
 description=替换 Smart Card, 补全安全组件及运行库，恢复国际版 HyperOS 3 的门禁卡和 MiPay 支付功能。
-updateUrl=https://raw.githubusercontent.com/StevenWin818/Magisk-Fix-MiPay/main/update.sh
+updateUrl=https://raw.githubusercontent.com/StevenWin818/Magisk-Fix-MiPay/main/update.json
