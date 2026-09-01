@@ -2,10 +2,7 @@ name: Build
 
 on:
   push:
-    branches: ["main"]
     tags: ["v*"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -18,6 +15,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Shanghai'
     outputs:
       versionCode: ${{ steps.build.outputs.versionCode }}
       zipName: ${{ steps.build.outputs.zipName }}
