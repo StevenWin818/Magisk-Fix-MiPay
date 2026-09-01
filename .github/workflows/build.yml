@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      versionCode: ${{ steps.build.outputs.versionCode }}
+      zipName: ${{ steps.build.outputs.zipName }}
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build module zip
+        id: build
+        shell: pwsh
+        run: ./scripts/build.ps1
+
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.zipName }}
+          path: out/${{ steps.build.outputs.zipName }}
+          retention-days: 14
+          compression-level: 0
+
+      - name: Create release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/${{ steps.build.outputs.zipName }}
+          generate_release_notes: true
+
+      - name: Sync update.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: ./scripts/update-manifest.ps1 -Tag '${{ github.ref_name }}' -VersionCode ${{ steps.build.outputs.versionCode }}
+
+      - name: Commit update.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Update/update.json
+          git diff --cached --quiet || git commit -m "chore: sync update.json for ${GITHUB_REF_NAME} [skip ci]"
+          git push origin HEAD:main

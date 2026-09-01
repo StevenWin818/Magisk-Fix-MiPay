@@ -1,0 +1,7 @@
+# 统一强制 LF 换行，确保 Android 模块脚本与配置在各平台检出时均为 LF
+* text=auto eol=lf
+*.sh text eol=lf
+*.prop text eol=lf
+*.rule text eol=lf
+*.json text eol=lf
+*.md text eol=lf

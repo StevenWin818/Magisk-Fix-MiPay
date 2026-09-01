@@ -25,6 +25,11 @@ FixMiPay 项目旨在将 HyperOS 国行版（CN）中的小米智能卡 (MITSMCl
 - 请勿在未经备份的情况下修改系统文件。
 - 仅在小米 17 欧洲版 (EEA) OS3.0.12.0.WPCEUXM 版本进行测试，其他版本未经测试，请自行测试兼容性。
 
+## 构建与发布
+
+- **一键打包**：`pwsh ./scripts/build.ps1`，产物输出至 `out/`；可用 `-VersionCode 2026082602` 指定版本号（默认按 UTC 日期自动生成）。
+- **发版**：修改 `module/module.prop` 的 `version` 后打 tag（如 `v1.1.2`）并推送，CI 将自动打包、创建 GitHub Release 并回写 `Update/update.json`。
+
 ## 更新日志
 
 更新日志请参阅 [Update/changelog.md](Update/changelog.md)。
