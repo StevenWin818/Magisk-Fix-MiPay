@@ -9,6 +9,7 @@ ui_print "- 正在挂载系统目录..."
 set_perm_recursive "$MODPATH/system/product/app/MITSMClient" 0 0 0755 0644
 set_perm_recursive "$MODPATH/system/product/app/UPTsmService" 0 0 0755 0644
 set_perm_recursive "$MODPATH/system/product/app/MINextpay" 0 0 0755 0644
+set_perm "$MODPATH/service.sh" 0 0 0755
 
 ui_print "- 正在检查 UID 状态与应用数据..."
 TSM_DATA_DIR="/data/data/com.miui.tsmclient"

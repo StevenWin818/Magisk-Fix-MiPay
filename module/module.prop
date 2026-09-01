@@ -1,6 +1,6 @@
 id=Fix_MiPay
-name=Fix MiPay on HyperOS EEA
-version=1.1.1
+name=Fix MiPay on HyperOS Global
+version=1.2.0
 versionCode=${VERSION_CODE}
 author=GitHub@StevenWin818
 description=替换 Smart Card, 补全安全组件及运行库，恢复国际版 HyperOS 3 的门禁卡和 MiPay 支付功能。

@@ -33,7 +33,7 @@ $version = ([regex]::Match($template, '(?m)^version=(.+?)\s*$')).Groups[1].Value
 if (-not $id -or -not $version) { throw "module.prop 缺少 id 或 version 字段" }
 
 if (-not $VersionCode) {
-    $today = (Get-Date).ToUniversalTime().ToString('yyyyMMdd')
+    $today = (Get-Date).ToString('yyyyMMdd')
     $existingSeq = [System.Collections.Generic.List[int]]::new()
 
     # 1. 检查 Update/update.json 中已记录的版本号
