@@ -35,7 +35,10 @@ FixMiPay 项目旨在将 HyperOS 国行版（CN）中的小米智能卡 (MITSMCl
   - 小米 17 欧洲版 (EEA) OS3.0.12.0.WPCEUXM
   - 小米 15 欧洲版 (EEA) OS3.0.303.0.WOCEUXM（KernelSU）
 - 其他版本未经测试，请自行测试兼容性。
-- 已知问题：较新的系统（如小米 15 EEA OS3.0.303.0.WOCEUXM）在系统框架 `ShortCutActionsUtils` 中加入了地区检查（`MiInputShortcutFeature.isCnRegionWithCardSupport` / `isInternationalRegionWithCardSupport`），非 CN 及部分港澳、东南亚地区时，"双击电源键唤起刷卡页"无反应（日志 `Region restriction: mi_pay`），开机时该开关也会被系统清空。需借助 Xposed 等方式解除该检查，本模块未处理。
+- 已知问题：双击电源键唤起刷卡页的地区检测
+  - 系统版本高于 OS3.0.300.0 时（该分界版本为推测，未经逐一验证），系统框架中可能存在针对"双击电源键唤起刷卡页"的地区检测（`MiInputShortcutFeature.isCnRegionWithCardSupport` / `isInternationalRegionWithCardSupport`）。前者要求系统地区为 CN；后者要求地区为部分港澳及东南亚地区，且 ROM 定义了 `support_international_access_card` 特性，而 EEA 等 ROM 并未定义该特性。两者都不满足时，开启"双击电源键唤起刷卡页"后双击无反应（日志 `Region restriction: mi_pay`），开机时该开关也会被系统清空。
+  - 已在小米 15 欧洲版 (EEA) OS3.0.303.0.WOCEUXM 上确认存在该检测，小米 17 欧洲版 (EEA) OS3.0.12.0.WPCEUXM 则不存在。
+  - 若开启后双击电源键无响应，请安装 LSPosed，再安装 [MiPayRegionDetectBypass](https://github.com/DuolaD/MiPayRegionDetectBypass) 模块（作用域勾选"系统框架"），重启设备后再次尝试。
 
 ## 构建与发布
 
