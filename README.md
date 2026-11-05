@@ -16,14 +16,14 @@ FixMiPay 项目旨在将 HyperOS 国行版（CN）中的小米智能卡 (MITSMCl
 2. **安装步骤**
    - 使用 Magisk Manager 或 KernelSU 等工具安装.zip文件。
    - 请在 SU 管理器中手动关闭对 NFC (android.uid.nfc) 的"卸载模块"功能。
+   - 同时关闭对银联可信服务组件 (com.unionpay.tsmservice.mi) 与小米智能卡网页组件 (com.miui.nextpay) 的"卸载模块"功能，详见下文。
    - 如需刷卡时的灵动岛/通知，请同时关闭对系统 (android.uid.system，uid 1000，SystemUI 所在) 的"卸载模块"功能，详见下文。
    - 重启设备以加载模块。
 
 
 ## 工作原理补充
 
-- **银联组件 / MINextpay 装入 `/data/app`**：KernelSU 默认的"卸载模块"会让普通应用看不到 `/product` 下由模块挂载的 APK，银联组件会因此在启动时崩溃。`service.sh` 会在开机后把这两个 APK 以"系统应用更新"的形式再安装一次到 `/data/app`（只在需要时执行，结果记录在模块目录的 `service.log`），卸载模块时由 `uninstall.sh` 移除。
-- **小米智能卡不能装入 `/data/app`**：它以平台签名加入 `android.uid.nfc` 共享 UID，且系统中存在被屏蔽的、版本号更高的国际版 `MITSMClientGlobal`。实测重启后系统会判定更新无效，并连同数据删除整个包。因此智能卡仍从 `/product` 加载。
+- **银联组件 / MINextpay**：KernelSU 默认的"卸载模块"会让被卸载的应用进程看不到 `/product` 下由模块挂载的 APK，银联组件会因此在启动时崩溃（读不到自身 APK）。请在 SU 管理器中对这两个应用关闭"卸载模块"。模块不会向 `/data` 安装任何应用，停用或移除模块即可完全还原。
 - **刷卡通知 / 灵动岛**：智能卡发出的焦点通知需要 SystemUI 从智能卡 APK 中加载布局渲染。若 SystemUI (uid 1000) 被"卸载模块"，渲染会失败（日志 `Unable to open '/product/app/MITSMClient/MITSMClient.apk'`），通知随即被以 `REASON_ERROR` 删除。
 
 
@@ -41,6 +41,7 @@ FixMiPay 项目旨在将 HyperOS 国行版（CN）中的小米智能卡 (MITSMCl
 
 - **一键打包**：`pwsh ./scripts/build.ps1`，产物输出至 `out/`；可用 `-VersionCode 2026082602` 指定版本号（默认按 UTC 日期自动生成）。
 - **发版**：修改 `module/module.prop` 的 `version` 后打 tag（如 `v1.1.2`）并推送，CI 将自动打包、创建 GitHub Release 并回写 `Update/update.json`。
+
 ## 更新日志
 
 更新日志请参阅 [Update/changelog.md](Update/changelog.md)。

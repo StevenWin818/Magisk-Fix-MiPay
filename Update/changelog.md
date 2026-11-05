@@ -2,13 +2,8 @@
 
 ## 未发布
 
-### 新增
-- 新增 `uninstall.sh`，卸载模块时移除装入 `/data/app` 的银联组件与 MINextpay 系统更新。
-
-### 修复
-- 修复银联可信服务组件 (UPTsmService) 在 KernelSU"卸载模块"下因读不到自身 APK 而启动即崩溃的问题：开机后将其与 MINextpay 以系统应用更新形式装入 `/data/app`。
-
 ### 说明
+- 银联可信服务组件 (UPTsmService) 在 KernelSU"卸载模块"下会因读不到自身 APK 而启动即崩溃：需在 SU 管理器中关闭对 com.unionpay.tsmservice.mi 与 com.miui.nextpay 的"卸载模块"功能。
 - 刷卡灵动岛/通知需在 SU 管理器中关闭对 android.uid.system (uid 1000) 的"卸载模块"功能。
 
 ## 1.2.0 - 2026-09-02
