@@ -1,7 +1,39 @@
 #!/system/bin/sh
+MODDIR=${0%/*}
+LOG="$MODDIR/service.log"
 
 # 修改系统属性以支持本地化安全元件 (SE)
 resetprop ro.vendor.se.type HCE,UICC,eSE
+
+# 把模块里的 APK 再以"系统应用更新"的形式装进 /data/app。
+# KernelSU 默认的"卸载模块"会让 SystemUI、桌面等进程看不到 /product 下由模块挂载的 APK，
+# 导致刷卡焦点通知渲染失败 (REASON_ERROR)、桌面快捷方式的图标与标签无法加载。
+# /data/app 不受影响，所有进程都能读到。签名与系统包一致（平台密钥），共享 UID 与数据都会保留。
+# 只在系统仍从 /product 加载、或模块内 APK 有变化（模块升级）时安装一次。
+install_as_update() {
+    pkg=$1
+    apk="$MODDIR/system/product/app/$2/$2.apk"
+    stamp="$MODDIR/.installed_$pkg"
+    [ -f "$apk" ] || return
+    sum=$(sha256sum "$apk" | cut -d' ' -f1)
+    code_path=$(dumpsys package "$pkg" 2>/dev/null | grep -m1 "codePath=" | sed 's/.*codePath=//')
+    case "$code_path" in
+        /data/app/*) [ "$(cat "$stamp" 2>/dev/null)" = "$sum" ] && return ;;
+    esac
+    res=$(pm install -r "$apk" 2>&1)
+    echo "$(date '+%F %T') $pkg: $code_path -> $res" >> "$LOG"
+    case "$res" in *Success*) echo "$sum" > "$stamp" ;; esac
+}
+
+(
+    until [ "$(getprop sys.boot_completed)" = "1" ]; do sleep 2; done
+    sleep 10
+    # 注意：小米智能卡 (com.miui.tsmclient) 不能这样处理。它通过平台签名加入 android.uid.nfc 共享 UID，
+    # 而系统还记着被 .replace 屏蔽掉的国际版 MITSMClientGlobal（版本号更高），重启后会把 /data 里的
+    # 更新判定为无效并连同数据删除整个包。
+    install_as_update com.unionpay.tsmservice.mi UPTsmService
+    install_as_update com.miui.nextpay MINextpay
+) &
 
 # 快捷手势开机无感自愈任务
 (
